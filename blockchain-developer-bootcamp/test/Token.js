@@ -7,12 +7,14 @@ describe("Token", ()=> {
 	let token
 	let accounts;
 	let deployer;
+	let receiver;
 	beforeEach( async ()=>{
 		//Fetch token from blockchain
 		const Token = await ethers.getContractFactory("Token")
 		token = await Token.deploy("Dapp University", "DAPP", '1000000')
 		accounts = await ethers.getSigners()
 		deployer = accounts[0]
+		receiver = accounts[1]
 	})
 
 	describe('Deployment', () =>{
@@ -49,6 +51,23 @@ describe("Token", ()=> {
 		expect(await token.balanceOf(deployer.address)).to.equal(totalSupply)
 
 	})
+	})
+	describe('Sending Tokens', () => {
+		let amount, transaction, result
+		
+		beforeEach( async ()=>{
+			amount = tokens(100)
+			transaction = await token.connect(deployer).transfer(receiver.addresss, amount)
+			result = await transaction.wait()
+		})
+		it("Transfers token balances", async ()=>{
+		expect(await token.balanceOf(deployer.address)).to.equal(tokens(999900))
+		expect(await token.balanceOf(receiver.address)).to.equal(amount)
+
+		})
+		it("Emits a transfer event", async() => {
+			console.log(result)
+		})
 	})
 	
 })
