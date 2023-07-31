@@ -55,19 +55,20 @@ describe("Token", ()=> {
 	describe('Sending Tokens', () => {
 		let amount, transaction, result
 		
-		beforeEach( async ()=>{
+		it("Transfers token balances", async ()=>{
+			
+		
 			amount = tokens(100)
 			transaction = await token.connect(deployer).transfer(receiver.addresss, amount)
 			result = await transaction.wait()
-		})
-		it("Transfers token balances", async ()=>{
+		
 		expect(await token.balanceOf(deployer.address)).to.equal(tokens(999900))
 		expect(await token.balanceOf(receiver.address)).to.equal(amount)
 
 		})
-		it("Emits a transfer event", async() => {
-			console.log(result)
-		})
+		// it("Emits a transfer event", async() => {
+		// 	console.log(result)
+		// })
 	})
 	
 })
